@@ -1,67 +1,103 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="space-y-6">
-    <div class="rounded-3xl bg-gradient-to-r from-amber-200 via-orange-100 to-rose-100 p-6 shadow-lg shadow-amber-200/50">
-        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-                <h1 class="text-3xl font-semibold text-slate-900">Месячный отчет птицефабрики</h1>
-                <p class="mt-2 text-slate-700">Сводные данные о курицах, породах, работниках и производительности.</p>
+<div class="mb-5">
+    <div class="card bg-light border-0 mb-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h1 class="mb-2"><i class="bi bi-bar-chart"></i> Месячный отчет птицефабрики</h1>
+                    <p class="text-muted mb-0">Сводные данные о курицах, породах, работниках и производительности.</p>
+                </div>
+                <div class="col-auto">
+                    <a href="{{ route('reports.export') }}" class="btn btn-success">
+                        <i class="bi bi-download"></i> Скачать отчет (CSV)
+                    </a>
+                </div>
             </div>
-            <a href="{{ route('reports.export') }}" class="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/10 hover:bg-slate-800">Скачать отчет (CSV)</a>
         </div>
     </div>
 
-    <div class="grid gap-6 xl:grid-cols-3">
-        <div class="rounded-3xl bg-white p-6 shadow-sm">
-            <h2 class="text-lg font-semibold text-slate-800">Общее количество кур</h2>
-            <p class="mt-4 text-4xl font-bold text-amber-600">{{ $totalChickens }}</p>
+    <div class="row mb-4">
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Общее количество кур</h5>
+                    <h2 class="display-5 text-warning">{{ $totalChickens }}</h2>
+                </div>
+            </div>
         </div>
-        <div class="rounded-3xl bg-white p-6 shadow-sm">
-            <h2 class="text-lg font-semibold text-slate-800">Яиц в месяц</h2>
-            <p class="mt-4 text-4xl font-bold text-rose-600">{{ $totalMonthlyEggs }}</p>
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Яиц в месяц</h5>
+                    <h2 class="display-5 text-danger">{{ $totalMonthlyEggs }}</h2>
+                </div>
+            </div>
         </div>
-        <div class="rounded-3xl bg-white p-6 shadow-sm">
-            <h2 class="text-lg font-semibold text-slate-800">Работников</h2>
-            <p class="mt-4 text-4xl font-bold text-slate-900">{{ $totalWorkers }}</p>
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Работников</h5>
+                    <h2 class="display-5 text-info">{{ $totalWorkers }}</h2>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-2">
-        <div class="rounded-3xl bg-white p-6 shadow-sm">
-            <h2 class="text-xl font-semibold text-slate-900">Распределение работников по цехам</h2>
-            <ul class="mt-4 space-y-3 text-slate-700">
-                @foreach($workersByWorkshop as $workshop)
-                    <li class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                        <div class="font-semibold text-slate-900">{{ $workshop->name }} ({{ $workshop->code }})</div>
-                        <div class="mt-1 text-sm text-slate-600">Работников: <strong>{{ $workshop->worker_count }}</strong></div>
-                    </li>
-                @endforeach
-            </ul>
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-people"></i> Распределение работников по цехам</h5>
+                </div>
+                <div class="card-body">
+                    @forelse($workersByWorkshop as $workshop)
+                        <div class="row mb-3 pb-3 border-bottom">
+                            <div class="col">
+                                <h6 class="mb-1">{{ $workshop->name }} <span class="badge bg-secondary">{{ $workshop->code }}</span></h6>
+                                <small class="text-muted">Работников: <strong>{{ $workshop->workers_count ?? 0 }}</strong></small>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-muted text-center">Нет данных</p>
+                    @endforelse
+                </div>
+            </div>
         </div>
-        <div class="rounded-3xl bg-white p-6 shadow-sm">
-            <h2 class="text-xl font-semibold text-slate-900">Породы и производительность</h2>
-            <div class="mt-4 overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-200 text-sm">
-                    <thead class="bg-slate-50 text-slate-700">
-                        <tr>
-                            <th class="px-4 py-3 text-left font-semibold">Порода</th>
-                            <th class="px-4 py-3 text-left font-semibold">Кур</th>
-                            <th class="px-4 py-3 text-left font-semibold">Среднее яиц</th>
-                            <th class="px-4 py-3 text-left font-semibold">Диета</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-200 bg-white">
-                        @foreach($breeds as $breed)
-                            <tr>
-                                <td class="px-4 py-3">{{ $breed->name }}</td>
-                                <td class="px-4 py-3">{{ $breed->chickens_count }}</td>
-                                <td class="px-4 py-3">{{ number_format($breed->chickens_avg_monthly_eggs, 2) }}</td>
-                                <td class="px-4 py-3">{{ $breed->diet_number }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-flower1"></i> Породы и производительность</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Порода</th>
+                                    <th>Кур</th>
+                                    <th>Яиц/мес</th>
+                                    <th>Диета</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($breeds as $breed)
+                                    <tr>
+                                        <td>{{ $breed->name }}</td>
+                                        <td>{{ $breed->chickens_count }}</td>
+                                        <td>{{ round($breed->chickens_avg_monthly_eggs) }}</td>
+                                        <td><span class="badge bg-info">{{ $breed->diet_number }}</span></td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">Нет данных</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

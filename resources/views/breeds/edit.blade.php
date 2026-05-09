@@ -1,44 +1,46 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="mx-auto max-w-3xl rounded-xl bg-white p-6 shadow-sm">
-    <h1 class="mb-4 text-2xl font-semibold">Редактировать породу</h1>
-    <form method="POST" action="{{ route('breeds.update', $breed) }}" class="space-y-4">
-        @csrf
-        @method('PUT')
-        <div class="grid gap-4 md:grid-cols-2">
-            <div>
-                <label class="mb-1 block text-sm font-medium text-slate-700">Название</label>
-                <input name="name" value="{{ old('name', $breed->name) }}" required class="w-full rounded-md border border-slate-300 px-3 py-2" />
-                @error('name')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
-            </div>
-            <div>
-                <label class="mb-1 block text-sm font-medium text-slate-700">Средний вес (кг)</label>
-                <input name="average_weight" type="number" step="0.01" value="{{ old('average_weight', $breed->average_weight) }}" required class="w-full rounded-md border border-slate-300 px-3 py-2" />
-                @error('average_weight')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
-            </div>
-        </div>
-        <div class="grid gap-4 md:grid-cols-2">
-            <div>
-                <label class="mb-1 block text-sm font-medium text-slate-700">Яиц в месяц</label>
-                <input name="average_monthly_eggs" type="number" value="{{ old('average_monthly_eggs', $breed->average_monthly_eggs) }}" required class="w-full rounded-md border border-slate-300 px-3 py-2" />
-                @error('average_monthly_eggs')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
-            </div>
-            <div>
-                <label class="mb-1 block text-sm font-medium text-slate-700">Номер диеты</label>
-                <input name="diet_number" type="number" value="{{ old('diet_number', $breed->diet_number) }}" required class="w-full rounded-md border border-slate-300 px-3 py-2" />
-                @error('diet_number')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
-            </div>
-        </div>
-        <div>
-            <label class="mb-1 block text-sm font-medium text-slate-700">Описание</label>
-            <textarea name="description" rows="4" class="w-full rounded-md border border-slate-300 px-3 py-2">{{ old('description', $breed->description) }}</textarea>
-            @error('description')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
-        </div>
-        <div class="flex items-center gap-3 pt-4">
-            <button type="submit" class="rounded-md bg-slate-900 px-4 py-2 text-white">Сохранить</button>
-            <a href="{{ route('breeds.index') }}" class="text-sm text-slate-600 hover:text-slate-900">Отмена</a>
-        </div>
+<div class="container mx-auto mt-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h1 class="mb-4 card-title"><i class="bi bi-pencil-square"></i> Редактировать породу</h1>
+            <form method="POST" action="{{ route('breeds.update', $breed) }}">
+                @csrf
+                @method('PUT')
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Название</label>
+                        <input name="name" value="{{ old('name', $breed->name) }}" pattern="[\u0430-\u044f\u0410-\u042f\u0451\u0401\s-]+" title="Оно может содержать только буквы" required class="form-control" />
+                        @error('name')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Средний вес (кг)</label>
+                        <input name="average_weight" type="number" step="0.01" min="0" value="{{ old('average_weight', $breed->average_weight) }}" required class="form-control" />
+                        @error('average_weight')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Яиц в месяц</label>
+                        <input name="average_monthly_eggs" type="number" min="0" max="365" value="{{ old('average_monthly_eggs', $breed->average_monthly_eggs) }}" required class="form-control" />
+                        @error('average_monthly_eggs')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Номер диеты</label>
+                        <input name="diet_number" type="number" min="1" max="99" value="{{ old('diet_number', $breed->diet_number) }}" required class="form-control" />
+                        @error('diet_number')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Описание</label>
+                    <textarea name="description" rows="4" class="form-control">{{ old('description', $breed->description) }}</textarea>
+                    @error('description')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                </div>
+                <div class="d-flex gap-2 pt-4">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Сохранить</button>
+                    <a href="{{ route('breeds.index') }}" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Отмена</a>
+                </div>
     </form>
 </div>
 @endsection

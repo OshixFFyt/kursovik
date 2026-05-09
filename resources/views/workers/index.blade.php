@@ -1,49 +1,65 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="space-y-6">
-    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-            <h1 class="text-2xl font-semibold">Работники</h1>
-            <p class="text-slate-600">Управление сотрудниками птицефабрики и закрепленными за ними клетками.</p>
+<div class="mb-5">
+    <div class="row align-items-center mb-4">
+        <div class="col">
+            <h1 class="mb-2"><i class="bi bi-people"></i> Работники</h1>
+            <p class="text-muted">Управление сотрудниками птицефабрики и их цехами.</p>
         </div>
-        <a href="{{ route('workers.create') }}" class="inline-flex items-center rounded-md bg-slate-900 px-4 py-2 text-white hover:bg-slate-800">Добавить работника</a>
+        <div class="col-auto">
+            <a href="{{ route('workers.create') }}" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Добавить работника
+            </a>
+        </div>
     </div>
 
-    <div class="overflow-x-auto rounded-xl bg-white shadow-sm">
-        <table class="min-w-full border-separate border-spacing-0 text-sm">
-            <thead class="bg-slate-50 text-slate-700">
-                <tr>
-                    <th class="border-b border-slate-200 px-4 py-3 text-left">Имя</th>
-                    <th class="border-b border-slate-200 px-4 py-3 text-left">Email</th>
-                    <th class="border-b border-slate-200 px-4 py-3 text-left">Паспорт</th>
-                    <th class="border-b border-slate-200 px-4 py-3 text-left">Зарплата</th>
-                    <th class="border-b border-slate-200 px-4 py-3 text-left">Клеток</th>
-                    <th class="border-b border-slate-200 px-4 py-3 text-left">Действия</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($workers as $worker)
-                    <tr class="border-b border-slate-200 last:border-0">
-                        <td class="px-4 py-3">{{ $worker->name }}</td>
-                        <td class="px-4 py-3">{{ $worker->email }}</td>
-                        <td class="px-4 py-3">{{ $worker->passport_series }} {{ $worker->passport_number }}</td>
-                        <td class="px-4 py-3">{{ number_format($worker->salary, 2) }}</td>
-                        <td class="px-4 py-3">{{ $worker->cages_count }}</td>
-                        <td class="px-4 py-3">
-                            <div class="flex flex-wrap gap-2">
-                                <a href="{{ route('workers.edit', $worker) }}" class="rounded-md bg-slate-900 px-3 py-1 text-white hover:bg-slate-800">Изменить</a>
-                                <form action="{{ route('workers.destroy', $worker) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="rounded-md bg-rose-600 px-3 py-1 text-white hover:bg-rose-500">Удалить</button>
-                                </form>
-                            </div>
-                        </td>
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover table-sm mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Имя</th>
+                        <th>Email</th>
+                        <th>Паспорт</th>
+                        <th>Зарплата</th>
+                        <th>Цехов</th>
+                        <th>Действия</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse($workers as $worker)
+                        <tr>
+                            <td><strong>{{ $worker->name }}</strong></td>
+                            <td><small>{{ $worker->email }}</small></td>
+                            <td><small>{{ $worker->passport_series }} {{ $worker->passport_number }}</small></td>
+                            <td>{{ number_format($worker->salary, 0) }} руб.</td>
+                            <td><span class="badge bg-success">{{ $worker->workshops_count ?? 0 }}</span></td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ route('workers.edit', $worker) }}" class="btn btn-warning" title="Изменить">
+                                        <i class="bi bi-pencil"></i> Изменить
+                                    </a>
+                                    <form action="{{ route('workers.destroy', $worker) }}" method="POST" class="d-inline" onsubmit="return confirm('Вы уверены?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger" title="Удалить">
+                                            <i class="bi bi-trash"></i> Удалить
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                <i class="bi bi-inbox"></i> Нет записей о работниках
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 @endsection

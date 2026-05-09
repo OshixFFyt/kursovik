@@ -1,33 +1,43 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="mx-auto max-w-md rounded-xl bg-white p-6 shadow-sm">
-    <h1 class="mb-4 text-2xl font-semibold">Регистрация</h1>
-    <form method="POST" action="{{ route('register.submit') }}" class="space-y-4">
-        @csrf
-        <div>
-            <label class="mb-1 block text-sm font-medium text-slate-700">Имя</label>
-            <input type="text" name="name" value="{{ old('name') }}" required class="w-full rounded-md border border-slate-300 px-3 py-2" />
-            @error('name')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-5">
+                    <h1 class="mb-4 card-title text-center"><i class="bi bi-person-plus-fill"></i> Регистрация</h1>
+                    <form method="POST" action="{{ route('register.submit') }}">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label">Имя</label>
+                            <input type="text" name="name" value="{{ old('name') }}" pattern="[\u0430-\u044f\u0410-\u042f\u0451\u0401\s-]+" title="Оно может содержать только буквы" required class="form-control" />
+                            @error('name')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" value="{{ old('email') }}" required class="form-control" />
+                            @error('email')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Пароль</label>
+                            <input type="password" name="password" required class="form-control" />
+                            @error('password')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Подтверждение пароля</label>
+                            <input type="password" name="password_confirmation" required class="form-control" />
+                        </div>
+                        <div class="d-flex gap-2 pt-2">
+                            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-person-check-fill"></i> Зарегистрироваться</button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{{ route('login') }}" class="btn btn-link">Уже есть аккаунт?</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div>
-            <label class="mb-1 block text-sm font-medium text-slate-700">Email</label>
-            <input type="email" name="email" value="{{ old('email') }}" required class="w-full rounded-md border border-slate-300 px-3 py-2" />
-            @error('email')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
-        </div>
-        <div>
-            <label class="mb-1 block text-sm font-medium text-slate-700">Пароль</label>
-            <input type="password" name="password" required class="w-full rounded-md border border-slate-300 px-3 py-2" />
-            @error('password')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
-        </div>
-        <div>
-            <label class="mb-1 block text-sm font-medium text-slate-700">Подтверждение пароля</label>
-            <input type="password" name="password_confirmation" required class="w-full rounded-md border border-slate-300 px-3 py-2" />
-        </div>
-        <div class="flex items-center gap-3">
-            <button type="submit" class="rounded-md bg-slate-900 px-4 py-2 text-white">Зарегистрироваться</button>
-            <a href="{{ route('login') }}" class="text-sm text-slate-600 hover:text-slate-900">Уже есть аккаунт?</a>
-        </div>
-    </form>
+    </div>
 </div>
 @endsection

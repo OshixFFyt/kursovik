@@ -63,7 +63,7 @@ class WorkerController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $worker->id],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . (int)$worker->id],
             'passport_series' => ['nullable', 'string', 'max:32'],
             'passport_number' => ['nullable', 'string', 'max:32'],
             'salary' => ['required', 'numeric', 'min:0'],
