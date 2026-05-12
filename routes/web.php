@@ -8,10 +8,14 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\WorkerController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    if (Auth::check()) {
+        return redirect()->route('dashboard');
+    }
+    return redirect()->route('login');
 });
 
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
